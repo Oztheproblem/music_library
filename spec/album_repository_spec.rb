@@ -6,15 +6,23 @@ RSpec.describe AlbumRepository do
     connection = PG.connect({ host: '127.0.0.1', dbname: 'music_library_test' })
     connection.exec(seed_sql)
   end
-  
+
   before(:each) do 
     reset_albums_table
   end
 
+  let(:albums) do
+    [
+      Album.new(1, 'Doolittle', 1998, 1),
+      Album.new(2, 'Surfer Rosa', 1988, 2),
+      Album.new(3, 'Waterloo', 1974, 3)
+    ]
+  end
+
   it "returns two albums" do
     repo = AlbumRepository.new
-
     albums = repo.all
+
     expect(albums.length).to eq 2 
     expect(albums.first.title).to eq "Bossanova" 
     expect(albums.first.release_year).to eq '1999' 
@@ -26,8 +34,8 @@ RSpec.describe AlbumRepository do
     albums = repo.find(1)
       
     expect(albums.title).to eq "Bossanova"
-    expect(albums.release_year).to eq '1999' # => '1999' 
-    expect(albums.artist_id).to eq '1' # => '1'
+    expect(albums.release_year).to eq '1999'
+    expect(albums.artist_id).to eq '1'
   end
 
   it "returns the single album Surfer Rosa" do
@@ -51,14 +59,11 @@ RSpec.describe AlbumRepository do
     all_albums = repository.all
 
     expect(all_albums).to include(
-        have_attributes(
-          title: new_album.title,
-          release_year: '1991',
-          artist_id: '1'
-        )
+      have_attributes(
+        title: new_album.title,
+        release_year: '1991',
+        artist_id: '1'
+      )
     )
-        
-    
-end
-
+  end
 end
